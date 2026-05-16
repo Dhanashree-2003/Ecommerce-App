@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
@@ -20,11 +20,26 @@ function App() {
 
           <Route path="/signup" element={<Signup />} />
 
-          <Route path="/home" element={<Home />} />
+          <Route
+            path="/home"
+            element={
+              localStorage.getItem("token") ? <Home /> : <Navigate to="/" />
+            }
+          />
 
-          <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/cart"
+            element={
+              localStorage.getItem("token") ? <Cart /> : <Navigate to="/" />
+            }
+          />
 
-          <Route path="/checkout" element={<Checkout />} />
+          <Route
+            path="/checkout"
+            element={
+              localStorage.getItem("token") ? <Checkout /> : <Navigate to="/" />
+            }
+          />
         </Routes>
       </BrowserRouter>
     </CartProvider>

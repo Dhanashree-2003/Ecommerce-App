@@ -16,15 +16,25 @@ const Signup = () => {
     e.preventDefault();
 
     try {
+      // Register user
       await API.post("/auth/register", form);
+
+      // Auto login after signup
+      const res = await API.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
+
+      // Store token
+      localStorage.setItem("token", res.data.token);
 
       alert("Signup successful");
 
-      navigate("/home");
+      window.location.href = "/home";
     } catch (error) {
       console.log(error);
 
-      alert("Signup failed");
+      alert(error.response?.data?.message || "Signup failed");
     }
   };
 

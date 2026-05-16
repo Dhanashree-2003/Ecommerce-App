@@ -21,7 +21,7 @@ const Login = () => {
 
       alert("Login Successful");
 
-      navigate("/home");
+      window.location.href = "/home";
     } catch (error) {
       alert(error.response?.data?.message || "Invalid email or password");
     }

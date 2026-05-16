@@ -10,6 +10,23 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Enter valid email",
+      });
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    // Check existing user
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -18,8 +35,10 @@ router.post("/register", async (req, res) => {
       });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create user
     const user = new User({
       name,
       email,
@@ -40,7 +59,10 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    // Find user
+    const user = await User.findOne({
+      email,
+    });
 
     if (!user) {
       return res.status(400).json({
@@ -48,6 +70,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -56,6 +79,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // Generate JWT token
     const token = jwt.sign(
       {
         id: user._id,
