@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import API from "../services/api";
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -15,15 +16,15 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await API.post("/auth/login", form);
+      await API.post("/auth/register", form);
 
-      localStorage.setItem("token", res.data.token);
-
-      alert("Login Successful");
+      alert("Signup successful");
 
       navigate("/home");
     } catch (error) {
-      alert(error.response?.data?.message || "Invalid email or password");
+      console.log(error);
+
+      alert("Signup failed");
     }
   };
 
@@ -33,7 +34,19 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow w-96"
       >
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <h2 className="text-2xl font-bold mb-4">Signup</h2>
+
+        <input
+          type="text"
+          placeholder="Name"
+          className="w-full border p-2 mb-4"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              name: e.target.value,
+            })
+          }
+        />
 
         <input
           type="email"
@@ -59,17 +72,10 @@ const Login = () => {
           }
         />
 
-        <button className="bg-black text-white px-4 py-2 w-full">Login</button>
-
-        <p className="mt-4 text-center">
-          Don&apos;t have an account?{" "}
-          <Link to="/signup" className="text-blue-500">
-            Signup
-          </Link>
-        </p>
+        <button className="bg-black text-white px-4 py-2 w-full">Signup</button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Signup;
